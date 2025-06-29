@@ -2,10 +2,13 @@ import express from 'express';
 import productRoutes from './api/routes/products.js';
 import orderRoutes from './api/routes/orders.js';
 import morgan from 'morgan';
+import bodyParser from 'body-parser';
 
 const app = express();
 const PORT = 3000;
 app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);

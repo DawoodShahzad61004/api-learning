@@ -3,14 +3,26 @@ import express from "express";
 const router = express.Router();
 
 router.get('/', (req, res) => {
+    const orders = {
+        orderId: req.body.orderId || 'Default Order ID',
+        product: req.body.product || 'Default Product',
+        quantity: req.body.quantity || 1
+    };
     res.status(200).json({
-        message: 'orders were fetched'
+        message: 'orders were fetched',
+        orders: orders
     });
 });
 
 router.post('/', (req, res, next) => {
+    const orders = {
+        orderId: req.body.orderId || 'Default Order ID',
+        product: req.body.product || 'Default Product',
+        quantity: req.body.quantity || 1
+    };
     res.status(201).json({
         message: 'order was created',
+        orders: orders
     });
 });
 

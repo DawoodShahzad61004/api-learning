@@ -3,14 +3,26 @@ import express from 'express';
 const router = express.Router();
 
 router.get('/', (req, res) => {
+    const products = {
+        name: res.body.name || 'Default Product',
+        price: res.body.price || 0.0,
+        description: res.body.description || 'No description provided'
+    }
     res.status(200).json({
-        message: 'Handling GET requests to /products'
+        message: 'Handling GET requests to /products',
+        createdProduct: products
     });
 });
 
 router.post('/', (req, res) => {
+    const products = {
+        name: req.body.name || 'Default Product',
+        price: req.body.price || 0.0,
+        description: req.body.description || 'No description provided'
+    }
     res.status(201).json({
         message: 'Handling POST requests to /products',
+        createdProduct: products
     });
 });
 
