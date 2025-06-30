@@ -1,8 +1,9 @@
 import express from 'express';
-import productRoutes from './api/routes/products.js';
-import orderRoutes from './api/routes/orders.js';
+import productRoutes from './api/routes/productRoutes.js';
+import orderRoutes from './api/routes/orderRoutes.js';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 
 const app = express();
 const PORT = 3000;
@@ -18,8 +19,18 @@ app.use((req, res, next) => {
     }
     next();
 });
+
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+
+mongoose.connect(
+  'mongodb+srv://' + process.env.MONGO_ATLAS_USER + ':' + process.env.MONGO_ATLAS_PW + '@node-rest-shop.iexstt7.mongodb.net/?retryWrites=true&w=majority&appName=node-rest-shop'
+).then(() => {
+  console.log("Connected to MongoDB Atlas successfully!");
+}).catch(err => {
+  console.error("MongoDB connection error:", err);
+});
+
 
 app.use((req, res, next) => {
     const error = new Error('Not Found');
