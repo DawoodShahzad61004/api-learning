@@ -19,11 +19,11 @@ router.get("/", (req, res) => {
   (async () => {
     try {
       const products = await Product.find()
-        .select("_id name price description")
+        .select("id name price description")
         .exec();
       const response = products.map((product) => {
         return {
-          _id: product._id,
+          id: product.id,
           name: product.name,
           price: product.price,
           description: product.description,
@@ -31,7 +31,7 @@ router.get("/", (req, res) => {
             // Meta Information for the client
             type: "GET",
             description: "Get a specific product",
-            url: `http://localhost:${PORT}/products/${product._id}`,
+            url: `http://localhost:${PORT}/products/${product.id}`,
           },
         };
       });
@@ -72,7 +72,7 @@ router.post("/", async (req, res) => {
   //     description: req.body.description || 'No description provided'
   // }
   const product = new Product({
-    _id: new mongoose.Types.ObjectId(),
+    id: new mongoose.Types.ObjectId(),
     name: req.body.name || "Default Product",
     price: req.body.price || 0.0,
     description: req.body.description || "No description provided",
@@ -82,14 +82,14 @@ router.post("/", async (req, res) => {
     res.status(201).json({
       message: "Product created successfully",
       createdProduct: {
-        _id: result._id,
+        id: result.id,
         name: result.name,
         price: result.price,
         description: result.description,
         request: {
           type: "GET",
           description: "Get the created product",
-          url: `http://localhost:${PORT}/products/${result._id}`,
+          url: `http://localhost:${PORT}/products/${result.id}`,
         },
       },
     });
@@ -123,7 +123,7 @@ router.get("/:productId", async (req, res) => {
       res.status(200).json({
         message: "Product found",
         product: {
-          _id: product._id,
+          id: product.id,
           name: product.name,
           price: product.price,
           description: product.description,
@@ -180,7 +180,7 @@ router.patch("/:productId", async (req, res) => {
         request: {
           type: "GET",
           description: "Get the updated product",
-          url: `http://localhost:${PORT}/products/${updated._id}`,
+          url: `http://localhost:${PORT}/products/${updated.id}`,
         },
       },
     });
@@ -197,7 +197,7 @@ router.delete("/:productId", async (req, res) => {
   //     id: id
   // });
   try {
-    const result = await Product.deleteOne({ _id: id }).exec();
+    const result = await Product.deleteOne({ id: id }).exec();
     if (result.deletedCount > 0) {
       res.status(200).json({
         message: "Product deleted successfully",
