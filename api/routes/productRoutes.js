@@ -3,6 +3,7 @@ import Product from "../models/product.js";
 import mongoose from "mongoose";
 
 const router = express.Router();
+const PORT = process.env.PORT || 3000;
 
 router.get("/", (req, res) => {
   // Temp data to check the GET request
@@ -17,8 +18,27 @@ router.get("/", (req, res) => {
   // });
   (async () => {
     try {
-      const products = await Product.find().exec();
-      res.status(200).json(products);
+      const products = await Product.find()
+        .select("_id name price description")
+        .exec();
+      const response = products.map((product) => {
+        return {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          description: product.description,
+          request: {
+            // Meta Information for the client
+            type: "GET",
+            description: "Get a specific product",
+            url: `http://localhost:${PORT}/products/${product._id}`,
+          },
+        };
+      });
+      res.status(200).json({
+        count: products.length,
+        products: response,
+      });
     } catch (err) {
       console.error(err);
       res.status(500).json({
@@ -61,7 +81,17 @@ router.post("/", async (req, res) => {
     const result = await product.save();
     res.status(201).json({
       message: "Product created successfully",
-      createdProduct: result,
+      createdProduct: {
+        _id: result._id,
+        name: result.name,
+        price: result.price,
+        description: result.description,
+        request: {
+          type: "GET",
+          description: "Get the created product",
+          url: `http://localhost:${PORT}/products/${result._id}`,
+        },
+      },
     });
   } catch (err) {
     console.error(err);
@@ -92,7 +122,17 @@ router.get("/:productId", async (req, res) => {
     if (product) {
       res.status(200).json({
         message: "Product found",
-        product: product,
+        product: {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          description: product.description,
+          request: {
+            type: "GET",
+            description: "Get all products",
+            url: `http://localhost:${PORT}/products`,
+          },
+        },
       });
     } else {
       res.status(404).json({
@@ -133,7 +173,16 @@ router.patch("/:productId", async (req, res) => {
 
     res.status(200).json({
       message: "Product updated",
-      product: updated,
+      product: {
+        name: updated.name,
+        price: updated.price,
+        description: updated.description,
+        request: {
+          type: "GET",
+          description: "Get the updated product",
+          url: `http://localhost:${PORT}/products/${updated._id}`,
+        },
+      },
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -153,6 +202,11 @@ router.delete("/:productId", async (req, res) => {
       res.status(200).json({
         message: "Product deleted successfully",
         id: id,
+        request: {
+          type: "POST",
+          description: "Create a new product",
+          url: `http://localhost:${PORT}/products`,
+        },
       });
     } else {
       res.status(404).json({
