@@ -2,11 +2,12 @@ import express from "express";
 import mongoose from "mongoose";
 import Order from "../models/order.js";
 import Product from "../models/product.js";
+import CheckAuth from "../middleware/check-auth.js";
 
 const router = express.Router();
 const PORT = process.env.PORT || 3000;
 
-router.get("/", async (req, res) => {
+router.get("/", CheckAuth, async (req, res) => {
   try {
     const orders = await Order.find()
       .select("id product quantity status orderDate")
@@ -35,7 +36,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", CheckAuth, async (req, res) => {
   const { productId, quantity } = req.body;
 
   try {
@@ -72,7 +73,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:orderId", async (req, res) => {
+router.get("/:orderId", CheckAuth, async (req, res) => {
   const id = req.params.orderId;
 
   try {
@@ -104,7 +105,7 @@ router.get("/:orderId", async (req, res) => {
   }
 });
 
-router.delete("/:orderId", async (req, res) => {
+router.delete("/:orderId", CheckAuth, async (req, res) => {
   const id = req.params.orderId;
 
   try {

@@ -2,6 +2,7 @@ import express from "express";
 import Product from "../models/product.js";
 import mongoose from "mongoose";
 import multer from "multer";
+import CheckAuth from "../middleware/check-auth.js";
 
 const router = express.Router();
 const PORT = process.env.PORT || 3000;
@@ -106,21 +107,29 @@ router.get("/", (req, res) => {
   // );
 });
 
-router.post("/", uploads.single("productImage"), async (req, res) => {
+router.post("/", uploads.single("productImage"), CheckAuth, async (req, res) => {
   // Temp data to check the POST request
   // const products = {
   //     name: req.body.name || 'Default Product',
   //     price: req.body.price || 0.0,
   //     description: req.body.description || 'No description provided'
   // }
-  console.log(req.file); // Log the uploaded file information
+  // console.log(req.file);
+
+  // Validate that a file was uploaded
+  if (!req.file) {
+    return res.status(400).json({
+      error: "No product image uploaded. Please attach an image file with the key 'productImage'."
+    });
+  }
+
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name || "Default Product",
     price: req.body.price || 0.0,
     description: req.body.description || "No description provided",
-    productImage: req.file ? req.file.path : null, 
-    // Store the file path if uploaded
+    productImage: req.file ? req.file.path : "", 
+    // Store the file path if uploaded, else empty string
   });
   try {
     const result = await product.save();
@@ -194,7 +203,7 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
-router.patch("/:productId", async (req, res) => {
+router.patch("/:productId", CheckAuth, async (req, res) => {
   const id = req.params.productId;
   // Temp data to check the PATCH request
   // res.status(200).json({
@@ -237,7 +246,7 @@ router.patch("/:productId", async (req, res) => {
   }
 });
 
-router.delete("/:productId", async (req, res) => {
+router.delete("/:productId", CheckAuth, async (req, res) => {
   const id = req.params.productId;
   // Temp data to check the DELETE request
   // res.status(200).json({

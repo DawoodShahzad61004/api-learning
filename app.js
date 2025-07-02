@@ -1,6 +1,7 @@
 import express from "express";
 import productRoutes from "./api/routes/productRoutes.js";
 import orderRoutes from "./api/routes/orderRoutes.js";
+import userRoutes from "./api/routes/userRoutes.js";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/users", userRoutes);
 
 mongoose
   .connect(
