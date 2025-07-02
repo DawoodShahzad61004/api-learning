@@ -1,9 +1,50 @@
 import express from "express";
 import Product from "../models/product.js";
 import mongoose from "mongoose";
+import multer from "multer";
 
 const router = express.Router();
 const PORT = process.env.PORT || 3000;
+// If you want quick, temporary file access for further processing
+// const upload = multer({
+//   storage: multer.memoryStorage(),
+// // Store files in memory for simplicity
+//   limits: { fileSize: 1024 * 1024 * 5 },
+// // Limit file size to 5MB
+// });
+
+// If you want to store files directly on your server
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Specify the directory to store uploaded files
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      `${new Date().toISOString().replace(/:/g, "-")}-${file.originalname}`
+    );
+    // Use a timestamp to avoid filename conflicts
+  },
+});
+const uploads = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 5 },
+  // Limit file size to 5MB
+  fileFilter: (req, file, cb) => {
+    // Check file type
+    const fileTypes = /jpeg|jpg|png|gif/; // Allowed file types
+    const mimetype = fileTypes.test(file.mimetype);
+    const extname = fileTypes.test(
+      file.originalname.split(".").pop().toLowerCase()
+    );
+
+    if (mimetype && extname) {
+      return cb(null, true); // Accept the file
+    } else {
+      cb(new Error("Only images are allowed!")); // Reject the file
+    }
+  },
+});
 
 router.get("/", (req, res) => {
   // Temp data to check the GET request
@@ -19,7 +60,7 @@ router.get("/", (req, res) => {
   (async () => {
     try {
       const products = await Product.find()
-        .select("id name price description")
+        .select("id name price description productImage")
         .exec();
       const response = products.map((product) => {
         return {
@@ -27,6 +68,7 @@ router.get("/", (req, res) => {
           name: product.name,
           price: product.price,
           description: product.description,
+          productImage: product.productImage,
           request: {
             // Meta Information for the client
             type: "GET",
@@ -64,18 +106,21 @@ router.get("/", (req, res) => {
   // );
 });
 
-router.post("/", async (req, res) => {
+router.post("/", uploads.single("productImage"), async (req, res) => {
   // Temp data to check the POST request
   // const products = {
   //     name: req.body.name || 'Default Product',
   //     price: req.body.price || 0.0,
   //     description: req.body.description || 'No description provided'
   // }
+  console.log(req.file); // Log the uploaded file information
   const product = new Product({
-    id: new mongoose.Types.ObjectId(),
+    _id: new mongoose.Types.ObjectId(),
     name: req.body.name || "Default Product",
     price: req.body.price || 0.0,
     description: req.body.description || "No description provided",
+    productImage: req.file ? req.file.path : null, 
+    // Store the file path if uploaded
   });
   try {
     const result = await product.save();
@@ -86,6 +131,7 @@ router.post("/", async (req, res) => {
         name: result.name,
         price: result.price,
         description: result.description,
+        productImage: result.productImage,
         request: {
           type: "GET",
           description: "Get the created product",
@@ -127,6 +173,7 @@ router.get("/:productId", async (req, res) => {
           name: product.name,
           price: product.price,
           description: product.description,
+          productImage: product.productImage,
           request: {
             type: "GET",
             description: "Get all products",
@@ -177,6 +224,7 @@ router.patch("/:productId", async (req, res) => {
         name: updated.name,
         price: updated.price,
         description: updated.description,
+        productImage: updated.productImage,
         request: {
           type: "GET",
           description: "Get the updated product",
@@ -197,7 +245,7 @@ router.delete("/:productId", async (req, res) => {
   //     id: id
   // });
   try {
-    const result = await Product.deleteOne({ id: id }).exec();
+    const result = await Product.deleteOne({ _id: id }).exec();
     if (result.deletedCount > 0) {
       res.status(200).json({
         message: "Product deleted successfully",

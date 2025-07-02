@@ -17,6 +17,10 @@ const productSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    productImage: {
+      type: String,
+      required: false,
+    },
   },
   {
     toJSON: {
