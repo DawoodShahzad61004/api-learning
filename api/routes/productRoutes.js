@@ -1,9 +1,14 @@
 import express from "express";
-import Product from "../models/product.js";
-import mongoose from "mongoose";
 import multer from "multer";
 import CheckAuth from "../middleware/check-auth.js";
-import ProductsController from "../controllers/productControllers.js";
+import {
+  getAllProducts,
+  createProduct,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} from "../controllers/productControllers.js";
+
 
 const router = express.Router();
 const PORT = process.env.PORT || 3000;
@@ -49,15 +54,15 @@ const uploads = multer({
   },
 });
 
-router.get("/", ProductsController.getAllProducts);
+router.get("/", getAllProducts);
 router.post(
   "/",
   uploads.single("productImage"),
   CheckAuth,
-  ProductsController.createProduct
+  createProduct
 );
-router.get("/:productId", ProductsController.getProductById);
-router.patch("/:productId", CheckAuth, ProductsController.updateProduct);
-router.delete("/:productId", CheckAuth, ProductsController.deleteProduct);
+router.get("/:productId", getProductById);
+router.patch("/:productId", CheckAuth, updateProduct);
+router.delete("/:productId", CheckAuth, deleteProduct);
 
 export default router;

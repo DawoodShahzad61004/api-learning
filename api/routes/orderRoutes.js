@@ -1,13 +1,19 @@
 import express from "express";
 import CheckAuth from "../middleware/check-auth.js";
-import OrdersController from "../controllers/ordersController.js";
+import {
+  getAllOrders,
+  createOrder,
+  getOrderById,
+  deleteOrder,
+} from "../controllers/orderControllers.js";
+
 
 const router = express.Router();
 const PORT = process.env.PORT || 3000;
 
-router.get("/", CheckAuth, OrdersController.getAllOrders);
-router.post("/", CheckAuth, OrdersController.createOrder);
-router.get("/:orderId", CheckAuth, OrdersController.getOrderById);
-router.delete("/:orderId", CheckAuth, OrdersController.deleteOrder);
+router.get("/", CheckAuth, getAllOrders);
+router.post("/", CheckAuth, createOrder);
+router.get("/:orderId", CheckAuth, getOrderById);
+router.delete("/:orderId", CheckAuth, deleteOrder);
 
 export default router;
