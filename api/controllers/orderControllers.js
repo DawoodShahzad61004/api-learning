@@ -9,10 +9,8 @@ export const getAllOrders = async (req, res) => {
     const orders = await Order.find()
       .select("id product quantity status orderDate")
       .populate("product", "name price")
-      // Populates the 'product' field in each order
-      // with the corresponding Product document,
-      // but selects only the 'name' and 'price'
-      // fields from the Product model
+      // Populates the 'product' field in each order with the corresponding Product document,
+      // but selects only the 'name' and 'price' fields from the Product model
       .exec();
 
     const response = orders.map((order) => ({
@@ -28,10 +26,9 @@ export const getAllOrders = async (req, res) => {
       },
     }));
 
-    res.status(200).set({
+    res.status(200).set({ 
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
       count: orders.length,
       orders: response,
     });
@@ -39,7 +36,6 @@ export const getAllOrders = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -54,7 +50,6 @@ export const createOrder = async (req, res) => {
       return res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "Product not found",
       });
     }
@@ -70,7 +65,6 @@ export const createOrder = async (req, res) => {
     res.status(201).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 201 Created
       message: "Order created successfully",
       createdOrder: {
         id: result.id,
@@ -89,7 +83,6 @@ export const createOrder = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -107,7 +100,6 @@ export const getOrderById = async (req, res) => {
       return res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "Order not found",
       });
     }
@@ -115,7 +107,6 @@ export const getOrderById = async (req, res) => {
     res.status(200).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
       message: "Order found",
       order: {
         id: order.id,
@@ -134,7 +125,6 @@ export const getOrderById = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -150,7 +140,6 @@ export const deleteOrder = async (req, res) => {
       return res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "Order not found",
       });
     }
@@ -158,7 +147,6 @@ export const deleteOrder = async (req, res) => {
     res.status(200).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
       message: "Order deleted successfully",
       request: {
         type: "POST",
@@ -174,7 +162,6 @@ export const deleteOrder = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }

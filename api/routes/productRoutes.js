@@ -36,10 +36,8 @@ const storage = multer.diskStorage({
 });
 const uploads = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 },
-  // Limit file size to 5MB
-  fileFilter: (req, file, cb) => {
-    // Check file type
+  limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
+  fileFilter: (req, file, cb) => { // Check file type
     const fileTypes = /jpeg|jpg|png|gif/; // Allowed file types
     const mimetype = fileTypes.test(file.mimetype);
     const extname = fileTypes.test(
@@ -55,12 +53,7 @@ const uploads = multer({
 });
 
 router.get("/", getAllProducts);
-router.post(
-  "/",
-  uploads.single("productImage"),
-  CheckAuth,
-  createProduct
-);
+router.post( "/", uploads.single("productImage"), CheckAuth, createProduct);
 router.get("/:productId", getProductById);
 router.patch("/:productId", CheckAuth, updateProduct);
 router.delete("/:productId", CheckAuth, deleteProduct);

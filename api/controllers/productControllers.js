@@ -26,7 +26,6 @@ export const getAllProducts = (req, res) => {
       res.status(200).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 200 OK
         count: products.length,
         products: response,
       });
@@ -35,7 +34,6 @@ export const getAllProducts = (req, res) => {
       res.status(500).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 500 Internal Server Error
         error: err.message,
       });
     }
@@ -43,12 +41,10 @@ export const getAllProducts = (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  // Validate that a file was uploaded
-  if (!req.file) {
+  if (!req.file) {                        // Validate that a file was uploaded
     return res.status(400).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 400 Bad Request
       error: "No product image uploaded. Please attach an image file with the key 'productImage'."
     });
   }
@@ -66,7 +62,6 @@ export const createProduct = async (req, res) => {
     res.status(201).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 201 Created
       message: "Product created successfully",
       createdProduct: {
         id: result.id,
@@ -86,7 +81,6 @@ export const createProduct = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -101,7 +95,6 @@ export const getProductById = async (req, res) => {
       res.status(200).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 200 OK
         message: "Product found",
         product: {
           id: product.id,
@@ -120,7 +113,6 @@ export const getProductById = async (req, res) => {
       res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "No valid entry found for provided ID",
       });
     }
@@ -129,7 +121,6 @@ export const getProductById = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -154,7 +145,6 @@ export const updateProduct = async (req, res) => {
       return res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "Product not found"
       });
     }
@@ -162,7 +152,6 @@ export const updateProduct = async (req, res) => {
     res.status(200).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
       message: "Product updated",
       product: {
         name: updated.name,
@@ -180,7 +169,6 @@ export const updateProduct = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -196,7 +184,6 @@ export const deleteProduct = async (req, res) => {
       res.status(200).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 200 OK
         message: "Product deleted successfully",
         id: id,
         request: {
@@ -209,7 +196,6 @@ export const deleteProduct = async (req, res) => {
       res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "No valid entry found for provided ID",
       });
     }
@@ -218,7 +204,6 @@ export const deleteProduct = async (req, res) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }

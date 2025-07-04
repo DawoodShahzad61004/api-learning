@@ -5,16 +5,11 @@ import jwt from "jsonwebtoken";
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}, "-password");
-    // Exclude password field
+    const users = await User.find({}, "-password");  // Exclude password field
 
     res.status(200).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
-      // Headers:
-      //   Content-Type: application/json
-      // Body:
       message: "Users fetched successfully",
       users: users.map((user) => ({
         id: user._id,
@@ -26,7 +21,6 @@ export const getAllUsers = async (req, res, next) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -40,8 +34,6 @@ export const createUser = async (req, res, next) => {
       return res.status(409).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 409 Conflict
-        // Body:
         message: "Email already exists",
       });
     }
@@ -60,10 +52,6 @@ export const createUser = async (req, res, next) => {
     res.status(201).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 201 Created
-      // Headers:
-      //   Content-Type: application/json
-      // Body:
       message: "User created successfully",
       createdUser: {
         id: result.id,
@@ -75,7 +63,6 @@ export const createUser = async (req, res, next) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -88,7 +75,6 @@ export const userLogin = async (req, res, next) => {
       return res.status(401).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 401 Unauthorized
         message: "Authentication failed",
       });
     }
@@ -103,7 +89,6 @@ export const userLogin = async (req, res, next) => {
       return res.status(401).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 401 Unauthorized
         message: "Authentication failed",
       });
     }
@@ -118,7 +103,6 @@ export const userLogin = async (req, res, next) => {
     res.status(200).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
       message: "Authentication successful",
       userId: user._id,
       email: user.email,
@@ -129,7 +113,6 @@ export const userLogin = async (req, res, next) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }
@@ -144,7 +127,6 @@ export const deleteUser = async (req, res, next) => {
       return res.status(404).set({
         "Content-Type": "application/json",
       }).json({
-        // Status Code: 404 Not Found
         message: "User not found",
       });
     }
@@ -152,7 +134,6 @@ export const deleteUser = async (req, res, next) => {
     res.status(200).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 200 OK
       message: "User deleted successfully",
     });
   } catch (err) {
@@ -160,7 +141,6 @@ export const deleteUser = async (req, res, next) => {
     res.status(500).set({
       "Content-Type": "application/json",
     }).json({
-      // Status Code: 500 Internal Server Error
       error: err.message,
     });
   }

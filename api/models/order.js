@@ -30,9 +30,8 @@ const orderSchema = mongoose.Schema(
   {
     // Customize how the object is returned when converted to JSON
     toJSON: {
-      transform: (doc, ret) => {
-        // Rename _id to id for frontend clarity
-        ret.id = ret._id;
+      transform: (doc, ret) => { 
+        ret.id = ret._id; // Rename _id to id for frontend clarity
         // Remove internal MongoDB fields from the output
         delete ret._id;
         delete ret.__v;

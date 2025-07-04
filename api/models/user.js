@@ -10,8 +10,7 @@ const userSchema = mongoose.Schema(
       trim: true, // Remove whitespace from both ends
       lowercase: true, // Convert to lowercase
       unique: true, // Ensure email is unique
-      match: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/, 
-      // Basic email validation regex
+      match: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/, // Basic email validation regex
     },
     password: {
       type: String,
